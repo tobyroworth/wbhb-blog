@@ -1,0 +1,91 @@
+<polymer-element name="wbhb-story" attributes="storyJSON story isOpen" on-click="slideToggle">
+    <style>
+    </style>
+    <template>
+        <div style="position: relative;  margin: 10px; top: 0px" id="storyContainer">
+            <content select="wbhb-cover">
+                <wbhb-cover class="a6" id="cover" coverImg='{{story.cover}}' small='false'></wbhb-cover>
+            </content>
+            <content id="pagesContent" select="wbhb-page" >
+                <template repeat="{{story.pages}}">
+                    <wbhb-page class="a6 slideunder" page="{{}}"></wbhb-page>
+                </template>
+            </content>
+        </div>
+    </template>
+    <script>
+        Polymer('wbhb-story', {
+            isOpen: false,
+            
+            ready: function() {
+                
+                this.resetStyleInheritance = false;
+                this.applyAuthorStyles = true;
+              
+                this.story = {
+                    id: 0,
+                    title: "",
+                    urlTitle: "",
+                    cover: "",
+                    coverSmall: "",
+                    pages: [""],
+                    tags: [""],
+                    publishedTimestamp: 0
+                };
+                
+                this.story = JSON.parse(this.storyJSON);
+                
+                //remove cover from shadow DOM (a little clunky)
+                var cover = this.$.cover.parentNode.removeChild(this.$.cover);
+                this.appendChild(cover);
+                
+                //remove pages from shadow DOM (a little clunky)
+                this.asyncMethod( function() {
+                    var pages = this.$.pagesContent.querySelectorAll("wbhb-page");
+                    for (var i = 0; i < pages.length; i++) {
+                        var page = pages[i].parentNode.removeChild(pages[i]);
+                        this.appendChild(page);
+                    }
+                }, null, 200);
+            },
+            
+            isOpenChanged: function() {
+                if (this.isOpen) {
+                    this.slideOut(this);
+                } else {
+                    this.slideIn(this);
+                }
+            },
+            
+            slideToggle: function(event) {
+                if (this.isOpen) {
+                    this.slideIn(event.currentTarget);
+                    this.isOpen = false;
+                } else {
+                    this.slideOut(event.currentTarget);
+                    this.isOpen = true;
+                }
+            },
+            
+            slideOut: function(story) {
+                
+                var pages = story.querySelectorAll("wbhb-page");
+                
+                for (var i = 0; i < pages.length; i++) {
+                   pages[i].style.top = 400*(i+1) + "px";
+                }
+            },
+            
+            slideIn: function(story) {
+                
+                var pages = story.querySelectorAll("wbhb-page");
+                
+                for (var i = 0; i < pages.length; i++) {
+                    pages[i].style.top = 0 + "px";
+                }
+            },
+         
+        });
+        
+    </script>
+</polymer-element>

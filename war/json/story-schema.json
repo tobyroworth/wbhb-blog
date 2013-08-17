@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "wbhb-story",
+    "description": "Metadata for a wbhb blog story to enable fetching of actual payload data",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "unique story identifier",
+            "required": true
+        },
+        "title": {
+            "type": "string",
+            "description": "canonical title",
+            "required": true
+        },
+        "urlTitle": {
+            "type": "string",
+            "description": "url-encoded form of title",
+            "required": true
+        },
+        "cover": {
+            "type": "string",
+            "description": "URL for the cover image"
+        },
+        "coverSmall": {
+            "type": "string",
+            "description": "URL for a smaller cover image"
+        },
+        "pages": {
+            "type": "array",
+            "description": "URLs for indivdual pages",
+            "items": {
+                "type": "string"
+            }
+        },
+        "tags": {
+            "type": "array",
+            "description": "tags to assist with sorting stories",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "publishedTimestamp": {
+            "type": "number",
+            "description": "The Unix timestamp of when the post is/was published"
+        }
+    },
+    "required": ["id", "title", "urlTitle", "publishedTimestamp"]
+}

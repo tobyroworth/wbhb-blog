@@ -1,0 +1,69 @@
+<polymer-element name="wbhb-cover" attributes="coverImg coverImgSmall small">
+    <style>
+        .expandable {
+            transition: width 0.5;
+            transition: height 0.5;
+        }
+    </style>
+    <template>
+        <content>
+            <img id="coverImage" class="scaleable" src='{{coverImg}}' width="{{width}}" height="{{height}}" />
+        </content>
+    </template>
+    <script>
+        Polymer("wbhb-cover", {
+            title: "titleNotSet",
+            coverImg: "",
+            coverImgSmall: "",
+            small: false,
+            width: 640,
+            height: 480,
+            
+            // TODO: ensure a small copy of the cover is never requested after a large one to reduce bandwidth usage.
+            // TOCONSIDER: might a small copy be hinted better etc - is the bandwidth hit worth it?
+            
+            // TODO: add a small/large attribute, and do magic to display correct size image, even after image changes
+            // TOCONSIDER: some of this should be handled in the story
+            
+            ready: function() {
+                if (this.coverImg == "" && this.coverImgSmall =="") {
+                    //no cover provided - use default
+                    
+                    this.coverImg = "images/blankCover_640.png";
+                    this.coverImgSmall = "images/blankCover_320.png";
+                } else if (this.coverImg == "") {
+                    //no large cover - use small one
+                    
+                    this.coverImg = this.coverImgSmall;
+                } else if (this.coverImgSmall =="") {
+                    //no small cover - scale down large one
+                    
+                    this.coverImgSmall = this.coverImg;
+                }
+                
+                //remove image from shadow DOM (a little clunky)
+                var image = this.$.coverImage.parentNode.removeChild(this.$.coverImage);
+                this.appendChild(image);
+            },
+            
+            coverImgChanged: function() {
+                //this.$.coverImage.src = this.coverImg;
+            },
+            
+            smallChanged: function() {
+                if (this.small) {
+                    this.width = 320;
+                    this.height = 240;
+                } else {
+                    this.width = 640;
+                    this.height = 480;
+                }
+            },
+            
+            toggleSmall: function(e, d, s) {
+                s.small = ! s.small;
+            }
+            
+        });
+    </script>
+</polymer-element>

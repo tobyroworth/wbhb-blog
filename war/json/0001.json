@@ -1,0 +1,17 @@
+{
+    "id": "0001",
+    "title": "Mead 5: Freyja's Folley",
+    "urlTitle": "mead-5-freyjas-folley",
+    "cover": "images/0001.png",
+    "coverSmall": "images/0001.png",
+    "pages": [
+        "stories/0001/1.html",
+        "stories/0001/2.html",
+        "stories/0001/3.html"
+    ],
+    "tags": [
+        "mead",
+        "brewing"
+    ],
+    "publishedTimestamp": "1375718400"
+}

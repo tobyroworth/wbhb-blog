@@ -1,0 +1,106 @@
+<link rel="import" href="../polymer/polymer-elements/polymer-ajax/polymer-ajax.html">
+<link rel="import" href="wbhb-story-factory.html">
+<polymer-element name="wbhb-carosel" attributes="centreItem">
+    <template>
+        <polymer-ajax id="getData" url="" params=''  handleAs="json"></polymer-ajax>
+        <div id="clipBox" style="width: 100%; overflow: hidden; clip:rect(0px,100px,100px,0px);">
+          
+            <template id="stories" repeat="{{stories}}">
+                <wbhb-story story="{{}}"></wbhb-story>
+            </template>
+<!--        <wbhb-story-factory id="factory" storyModel={{stories}}>-->
+<!--          </wbhb-story-factory>-->
+            <content>
+            </content>
+        </div>
+    </template>
+    <script>
+        Polymer('wbhb-carosel', {
+            centreItem: 0,
+            storyList: [
+                "http://localhost:8080/json/0001.json",
+                "http://localhost:8080/json/0002.json", 
+                "http://localhost:8080/json/0001.json",
+                "http://localhost:8080/json/0002.json", 
+                "http://localhost:8080/json/0001.json",
+                "http://localhost:8080/json/0002.json"
+            ],
+            stories: [],
+            storiesChanged: [],
+            
+            ready: function() {
+                this.resetStyleInheritance = false;
+                this.applyAuthorStyles = true;
+                
+                this.getStory(0);
+                this.getStory(1);
+                this.positionChildren();
+                
+                var ajax = this.$.getData;
+                ajax.addEventListener("polymer-response", function(e) {
+                    var story = e.detail.response;
+                    var carosel = this.parentNode.host;
+                    
+                    carosel.stories.push(story);
+                    carosel.storiesNumber = carosel.stories.length;
+                });
+            },
+            
+            positionChildren: function() {
+                var myStories = this.querySelectorAll("wbhb-story");
+                
+                console.log(myStories.length);
+                
+                for (var i = 0; i < myStories.length; i++) {
+                    myStories[i].isOpen = false;
+                    myStories[i].style.position = "absolute";
+                    myStories[i].style.transition = "left 2s";
+                    myStories[i].style.left = (i - this.centreItem) * 700 + 500 + "px";
+                }   
+            },
+            
+            centreItemChanged: function() {
+                this.positionChildren();   
+            },
+            
+            scroll: function(direction) {
+                if (direction > 0) {
+                    this.centreItem++;
+                    this.getMore();
+                }
+                if (direction < 0) {
+                    this.centreItem--;
+                }
+            },
+            
+            getMore: function() {
+                this.getStory(this.centreItem+1);
+            },
+            
+            getStory: function(id) {
+                var ajax = this.$.getData;
+                //ajax.url = "http://localhost:8080/json/0002.json";
+                ajax.url = this.storyList[id];
+                ajax.go();
+                
+                //wait a bit before popping stories
+                //TODO: find the proepr way to do this (checkpoints etc)
+                this.asyncMethod(this.popStories, null, 500);
+                this.asyncMethod(this.positionChildren, null, 510);
+                
+            },
+            
+            popStories: function() {
+         
+                //pop stories from shadow DOM (a little clunky)
+                var images = this.$.clipBox.querySelectorAll("wbhb-story");
+                for (var i = 0; i < images.length; i++) {
+                    var image = images[i];
+                    image = image.parentNode.removeChild(image);
+                    this.appendChild(image);
+                }
+            }
+            
+        });
+  </script>
+</polymer-element>

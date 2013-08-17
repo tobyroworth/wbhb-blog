@@ -1,0 +1,30 @@
+<polymer-element name="wbhb-story-factory" attributes="storyModel">
+<!--    <div style="hidden">-->
+        <template id="stories" repeat="{{ storyModel }}">
+            <wbhb-story story="{{}}"></wbhb-story>
+        </template>
+<!--    </div>-->
+    <script>
+        Polymer('wbhb-story-factory', {
+            
+            storyModel: [{}],
+            
+            ready: function() {
+                
+                this.resetStyleInheritance = false;
+                this.applyAuthorStyles = true;
+            },
+            
+            getLastStory: function() {
+                
+                // TODO: change this to make it work for stories inserted in the middle
+                newElement = this.querySelectorAll("whbh-story");
+                console.log(newElement.length + " stories in factory");
+                console.log(this.storyModel[0].title);
+                //return newElement[-1].cloneNode(true);
+            }
+         
+        });
+        
+    </script>
+</polymer-element>

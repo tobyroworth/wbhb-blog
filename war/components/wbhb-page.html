@@ -1,0 +1,17 @@
+<polymer-element name="wbhb-page" attributes="page">
+  <template>
+<content>
+    This is page {{page}}.
+</content>
+  </template>
+  <script>
+    Polymer('wbhb-page', {
+      page: 0,
+            
+            ready: function() {
+        this.resetStyleInheritance = false;
+        this.applyAuthorStyles = true;
+    }
+    });
+  </script>
+</polymer-element>
