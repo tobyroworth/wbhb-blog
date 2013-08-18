@@ -17,7 +17,7 @@
             coverImgSmall: "",
             small: false,
             width: 640,
-            height: 480,
+            height: 380,
             
             // TODO: ensure a small copy of the cover is never requested after a large one to reduce bandwidth usage.
             // TOCONSIDER: might a small copy be hinted better etc - is the bandwidth hit worth it?
@@ -53,10 +53,10 @@
             smallChanged: function() {
                 if (this.small) {
                     this.width = 320;
-                    this.height = 240;
+                    this.height = 190;
                 } else {
                     this.width = 640;
-                    this.height = 480;
+                    this.height = 380;
                 }
             },
             

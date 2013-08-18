@@ -4,14 +4,15 @@
     <template>
         <polymer-ajax id="getData" url="" params=''  handleAs="json"></polymer-ajax>
         <div id="clipBox" style="width: 100%; overflow: hidden; clip:rect(0px,100px,100px,0px);">
-          
+            <div style="visibility: visible;">
+                <content>
+                </content>
+            </div>
             <template id="stories" repeat="{{stories}}">
-                <wbhb-story story="{{}}"></wbhb-story>
+                <div style="visibility: hidden;">
+                    <wbhb-story class="hidden" story="{{}}"></wbhb-story>
+                </div>
             </template>
-<!--        <wbhb-story-factory id="factory" storyModel={{stories}}>-->
-<!--          </wbhb-story-factory>-->
-            <content>
-            </content>
         </div>
     </template>
     <script>
@@ -53,8 +54,6 @@
                 
                 for (var i = 0; i < myStories.length; i++) {
                     myStories[i].isOpen = false;
-                    myStories[i].style.position = "absolute";
-                    myStories[i].style.transition = "left 2s";
                     myStories[i].style.left = (i - this.centreItem) * 700 + 500 + "px";
                 }   
             },
@@ -85,7 +84,7 @@
                 
                 //wait a bit before popping stories
                 //TODO: find the proepr way to do this (checkpoints etc)
-                this.asyncMethod(this.popStories, null, 500);
+                this.asyncMethod(this.popStories, null, 400);
                 this.asyncMethod(this.positionChildren, null, 510);
                 
             },
@@ -98,6 +97,11 @@
                     var image = images[i];
                     image = image.parentNode.removeChild(image);
                     this.appendChild(image);
+                    this.asyncMethod(function(image) {
+                        image.classList.add("visible");
+                        image.classList.remove("hidden");
+                    },
+                    image, 2);
                 }
             }
             

@@ -13,6 +13,7 @@ body {
     height: 380px;
     background-color: #ffffff;
     margin: 5px;
+    overflow: hidden;
 }
 
 .slideUnder {
@@ -24,4 +25,24 @@ body {
 
 .scaleable {
     transition: width 0.5s, height 0.5s;
+}
+
+wbhb-story {
+    position: absolute;
+    left: 2000px;
+    transition: opacity 0.5s, left 2s;
+}
+
+wbhb-story.hidden {
+    position: absolute;
+    left: 2000px;
+    visibility: hidden;
+    display: none;
+    opacity: 0;
+}
+
+wbhb-story.visible {
+    visibility: visible;
+    display: block;
+    opacity: 1;
 }
