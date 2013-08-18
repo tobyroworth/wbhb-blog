@@ -5,9 +5,8 @@
     "cover": "images/0001.png",
     "coverSmall": "images/0001.png",
     "pages": [
-        "stories/0001/1.html",
-        "stories/0001/2.html",
-        "stories/0001/3.html"
+        "stories/0001/page1.html",
+        "stories/0001/page2.html"
     ],
     "tags": [
         "mead",

@@ -2,6 +2,7 @@
     <style>
     </style>
     <template>
+        <polymer-ajax id="getPage" url="" handleAs="text" on-polymer-response="addPage" />
         <div style="position: relative;  margin: 10px; top: 0px" id="storyContainer">
             <content select="wbhb-cover">
                 <wbhb-cover class="a6" id="cover" coverImg='{{story.cover}}' small='false'></wbhb-cover>
@@ -16,6 +17,7 @@
     <script>
         Polymer('wbhb-story', {
             isOpen: false,
+            pagesGot: 0,
             
             ready: function() {
                 
@@ -44,6 +46,8 @@
                     var pages = this.$.pagesContent.querySelectorAll("wbhb-page");
                     for (var i = 0; i < pages.length; i++) {
                         var page = pages[i].parentNode.removeChild(pages[i]);
+                        this.$.getPage.url = this.story.pages[i];
+                        this.$.getPage.go();
                         this.appendChild(page);
                     }
                 }, null, 200);
@@ -72,7 +76,7 @@
                 var pages = story.querySelectorAll("wbhb-page");
                 
                 for (var i = 0; i < pages.length; i++) {
-                   pages[i].style.top = 400*(i+1) + "px";
+                   pages[i].style.top = 420*(i+1) + "px";
                 }
             },
             
@@ -84,6 +88,14 @@
                     pages[i].style.top = 0 + "px";
                 }
             },
+            
+            addPage: function(e) {
+                var page = e.detail.response;
+                var pages = this.querySelectorAll("wbhb-page");
+                    
+                pages[this.pagesGot].innerHTML = page;
+                this.pagesGot++;
+            }
          
         });
         
