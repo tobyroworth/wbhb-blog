@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer-elements/polymer-ajax/polymer-ajax.html">
-<link rel="import" href="wbhb-story-factory.html">
 <polymer-element name="wbhb-carosel" attributes="centreItem">
     <template>
         <polymer-ajax id="getData" url="" params=''  handleAs="json"></polymer-ajax>
@@ -18,23 +17,32 @@
     <script>
         Polymer('wbhb-carosel', {
             centreItem: 0,
+            fetchAhead: 2,
             storyList: [
-                "http://localhost:8080/json/0001.json",
-                "http://localhost:8080/json/0002.json", 
-                "http://localhost:8080/json/0001.json",
-                "http://localhost:8080/json/0002.json", 
-                "http://localhost:8080/json/0001.json",
-                "http://localhost:8080/json/0002.json"
+                "json/0001.json",
+                "json/0002.json", 
+                "json/0001.json",
+                "json/0002.json",  
+                "json/0001.json",
+                "json/0002.json",  
+                "json/0001.json",
+                "json/0002.json", 
+                "json/0001.json",
+                "json/0002.json"
             ],
             stories: [],
-            storiesChanged: [],
             
             ready: function() {
                 this.resetStyleInheritance = false;
                 this.applyAuthorStyles = true;
                 
-                this.getStory(0);
-                this.getStory(1);
+                // fatch starting stories
+                this.getStory(this.centreItem);
+                
+                for (var i = 1; i <= this.fetchAhead; i++) {
+                    this.getStory(this.centreItem + i);
+                }
+                
                 this.positionChildren();
                 
                 var ajax = this.$.getData;
@@ -43,14 +51,11 @@
                     var carosel = this.parentNode.host;
                     
                     carosel.stories.push(story);
-                    carosel.storiesNumber = carosel.stories.length;
                 });
             },
             
             positionChildren: function() {
                 var myStories = this.querySelectorAll("wbhb-story");
-                
-                console.log(myStories.length);
                 
                 for (var i = 0; i < myStories.length; i++) {
                     myStories[i].isOpen = false;
@@ -64,29 +69,40 @@
             
             scroll: function(direction) {
                 if (direction > 0) {
-                    this.centreItem++;
-                    this.getMore();
+                    if (this.centreItem < this.stories.length - 1) {
+                        this.centreItem++;
+                        if (this.stories.length <= this.centreItem + this.fetchAhead) {
+                            this.getMore();
+                        }
+                    } else {
+                        //bounce
+                    }
                 }
                 if (direction < 0) {
-                    this.centreItem--;
+                    if (this.centreItem > 0) {
+                        this.centreItem--;
+                    }
                 }
             },
             
             getMore: function() {
-                this.getStory(this.centreItem+1);
+                var next = this.centreItem + this.fetchAhead;
+                this.getStory(next);
             },
             
             getStory: function(id) {
-                var ajax = this.$.getData;
-                //ajax.url = "http://localhost:8080/json/0002.json";
-                ajax.url = this.storyList[id];
-                ajax.go();
-                
-                //wait a bit before popping stories
-                //TODO: find the proepr way to do this (checkpoints etc)
-                this.asyncMethod(this.popStories, null, 400);
-                this.asyncMethod(this.positionChildren, null, 510);
-                
+                if (id < this.storyList.length) {
+                    
+                    var ajax = this.$.getData;
+                    ajax.url = this.storyList[id];
+                    ajax.go();
+                    
+                    //wait a bit before popping stories
+                    //TODO: find the proepr way to do this (checkpoints etc)
+                    this.asyncMethod(this.popStories, null, 400);
+                    this.asyncMethod(this.positionChildren, null, 510);
+                    
+                }
             },
             
             popStories: function() {
