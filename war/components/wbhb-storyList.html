@@ -1,0 +1,47 @@
+<link rel="import" href="../polymer/polymer-elements/polymer-ajax/polymer-ajax.html">
+<polymer-element name="wbhb-storyList" attributes="">
+    <template>
+        <polymer-ajax id="getData" url="" params=''  handleAs="json"></polymer-ajax>
+    </template>
+    <script>
+        Polymer('wbhb-storyList', {
+            storyList: [
+                "json/0001.json",
+                "json/0002.json",
+                "json/0002.json", 
+                "json/0001.json",
+                "json/0002.json",  
+                "json/0001.json",
+                "json/0002.json",  
+                "json/0001.json",
+                "json/0002.json", 
+                "json/0001.json",
+                "json/0002.json"
+            ],
+            stories: [],
+              
+            ready: function() {
+                var ajax = this.$.getData;
+                ajax.addEventListener("polymer-response", function(e) {
+                    var story = e.detail.response;
+                    var polymerParent = this.parentNode.host;
+                    
+                    polymerParent.stories.push(story);
+                });
+            },
+            
+            getStory: function(index) {
+                return stories[i];
+            },
+            
+            fetchStory: function(id) {
+                if (id < this.storyList.length) {
+                    
+                    var ajax = this.$.getData;
+                    ajax.url = this.storyList[id];
+                    ajax.go();
+                }
+            }
+        });
+  </script>
+</polymer-element>

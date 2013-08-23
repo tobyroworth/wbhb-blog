@@ -1,7 +1,6 @@
-<link rel="import" href="../polymer/polymer-elements/polymer-ajax/polymer-ajax.html">
-<polymer-element name="wbhb-carosel" attributes="centreItem">
+<link rel="import" href="wbhb-storyList.html" />
+<polymer-element name="wbhb-carosel" attributes="centreItem" extends="wbhb-storyList">
     <template>
-        <polymer-ajax id="getData" url="" params=''  handleAs="json"></polymer-ajax>
         <div id="clipBox" style="width: 100%; overflow: hidden; clip:rect(0px,100px,100px,0px);">
             <div style="visibility: visible;">
                 <content>
@@ -18,40 +17,23 @@
         Polymer('wbhb-carosel', {
             centreItem: 0,
             fetchAhead: 2,
-            storyList: [
-                "json/0001.json",
-                "json/0002.json", 
-                "json/0001.json",
-                "json/0002.json",  
-                "json/0001.json",
-                "json/0002.json",  
-                "json/0001.json",
-                "json/0002.json", 
-                "json/0001.json",
-                "json/0002.json"
-            ],
             stories: [],
             
             ready: function() {
+                this.super();
+                
                 this.resetStyleInheritance = false;
                 this.applyAuthorStyles = true;
                 
-                // fatch starting stories
-                this.getStory(this.centreItem);
+                // fetch starting stories
+                this.fetchStory(this.centreItem);
                 
                 for (var i = 1; i <= this.fetchAhead; i++) {
-                    this.getStory(this.centreItem + i);
+                    this.fetchStory(this.centreItem + i);
                 }
                 
-                this.positionChildren();
-                
-                var ajax = this.$.getData;
-                ajax.addEventListener("polymer-response", function(e) {
-                    var story = e.detail.response;
-                    var carosel = this.parentNode.host;
-                    
-                    carosel.stories.push(story);
-                });
+                this.asyncMethod(this.popStories, null, 40);
+                this.asyncMethod(this.positionChildren, null, 510);
             },
             
             positionChildren: function() {
@@ -72,7 +54,7 @@
                     if (this.centreItem < this.stories.length - 1) {
                         this.centreItem++;
                         if (this.stories.length <= this.centreItem + this.fetchAhead) {
-                            this.getMore();
+                            this.fetchMore();
                         }
                     } else {
                         //bounce
@@ -81,28 +63,20 @@
                 if (direction < 0) {
                     if (this.centreItem > 0) {
                         this.centreItem--;
+                    } else {
+                        //bounce
                     }
                 }
             },
             
-            getMore: function() {
+            fetchMore: function() {
                 var next = this.centreItem + this.fetchAhead;
-                this.getStory(next);
-            },
-            
-            getStory: function(id) {
-                if (id < this.storyList.length) {
+                this.fetchStory(next);
                     
-                    var ajax = this.$.getData;
-                    ajax.url = this.storyList[id];
-                    ajax.go();
-                    
-                    //wait a bit before popping stories
-                    //TODO: find the proepr way to do this (checkpoints etc)
-                    this.asyncMethod(this.popStories, null, 400);
-                    this.asyncMethod(this.positionChildren, null, 510);
-                    
-                }
+                //wait a bit before popping stories
+                //TODO: find the proepr way to do this (checkpoints etc)
+                this.asyncMethod(this.popStories, null, 400);
+                this.asyncMethod(this.positionChildren, null, 510);
             },
             
             popStories: function() {
