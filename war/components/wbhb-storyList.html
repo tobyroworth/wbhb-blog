@@ -7,7 +7,6 @@
         Polymer('wbhb-storyList', {
             storyList: [
                 "json/0001.json",
-                "json/0002.json",
                 "json/0002.json", 
                 "json/0001.json",
                 "json/0002.json",  
@@ -27,13 +26,14 @@
                     var polymerParent = this.parentNode.host;
                     
                     polymerParent.stories.push(story);
+                    polymerParent.asyncFire('polymer-signal', {name: "newStoryLoaded", data: story.id});
                 });
             },
-            
+                
             getStory: function(index) {
                 return stories[i];
             },
-            
+                
             fetchStory: function(id) {
                 if (id < this.storyList.length) {
                     

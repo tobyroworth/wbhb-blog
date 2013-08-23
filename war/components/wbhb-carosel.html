@@ -1,15 +1,13 @@
 <link rel="import" href="wbhb-storyList.html" />
+<link rel="import" href="../polymer/polymer-elements/polymer-signals/polymer-signals.html" />
 <polymer-element name="wbhb-carosel" attributes="centreItem" extends="wbhb-storyList">
     <template>
+        <polymer-signals on-polymer-signal-newStoryLoaded="newStoryLoaded"></polymer-signals>
         <div id="clipBox" style="width: 100%; overflow: hidden; clip:rect(0px,100px,100px,0px);">
-            <div style="visibility: visible;">
                 <content>
                 </content>
-            </div>
             <template id="stories" repeat="{{stories}}">
-                <div style="visibility: hidden;">
-                    <wbhb-story class="hidden" story="{{}}"></wbhb-story>
-                </div>
+                <wbhb-story class="hidden" story="{{}}"></wbhb-story>
             </template>
         </div>
     </template>
@@ -17,7 +15,6 @@
         Polymer('wbhb-carosel', {
             centreItem: 0,
             fetchAhead: 2,
-            stories: [],
             
             ready: function() {
                 this.super();
@@ -32,8 +29,7 @@
                     this.fetchStory(this.centreItem + i);
                 }
                 
-                this.asyncMethod(this.popStories, null, 40);
-                this.asyncMethod(this.positionChildren, null, 510);
+                this.addEventListener('polymer-signal-newStoryLoaded', this.newStoryLoaded);
             },
             
             positionChildren: function() {
@@ -72,11 +68,11 @@
             fetchMore: function() {
                 var next = this.centreItem + this.fetchAhead;
                 this.fetchStory(next);
-                    
-                //wait a bit before popping stories
-                //TODO: find the proepr way to do this (checkpoints etc)
-                this.asyncMethod(this.popStories, null, 400);
-                this.asyncMethod(this.positionChildren, null, 510);
+            },
+            
+            newStoryLoaded: function(e, detail, sender) {
+                this.popStories();
+                this.positionChildren();
             },
             
             popStories: function() {
@@ -87,11 +83,8 @@
                     var image = images[i];
                     image = image.parentNode.removeChild(image);
                     this.appendChild(image);
-                    this.asyncMethod(function(image) {
-                        image.classList.add("visible");
-                        image.classList.remove("hidden");
-                    },
-                    image, 2);
+                    image.classList.add("visible");
+                    image.classList.remove("hidden");
                 }
             }
             
