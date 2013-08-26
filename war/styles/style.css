@@ -49,3 +49,53 @@ wbhb-story.visible {
     display: block;
     opacity: 1;
 }
+
+wbhb-flygrid {
+    transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    display: block;
+}
+
+wbhb-flygrid.hidden {
+    opacity: 0;
+/*
+    visibility: hidden;
+    display: none;
+*/
+}
+
+wbhb-flygrid.visible {
+    opacity: 1;
+/*
+    visibility: visible;
+    display: block;
+*/
+}
+
+wbhb-flygrid wbhb-cover {
+    position: absolute;
+    transition: left 2s, top 2s;
+    -webkit-transition: left 2s, top 2s;
+}
+
+wbhb-carosel {
+    transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    display: block;
+}
+
+wbhb-carosel.hidden {
+    opacity: 0;
+/*
+    visibility: hidden;
+    display: none;
+*/
+}
+
+wbhb-carosel.visible {
+    opacity: 1;
+/*
+    visibility: visible;
+    display: block;
+*/
+}

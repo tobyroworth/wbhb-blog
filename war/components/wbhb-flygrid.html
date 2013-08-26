@@ -1,0 +1,81 @@
+<link rel="import" href="wbhb-storyList.html" />
+<link rel="import" href="../polymer/polymer-elements/polymer-signals/polymer-signals.html" />
+<polymer-element name="wbhb-flygrid" attributes="centreItem" extends="wbhb-storyList">
+    <template>
+        <polymer-signals on-polymer-signal-newStoryLoaded="newStoryLoaded"></polymer-signals>
+        <div id="clipBox" style="width: 100%; overflow: hidden; clip:rect(0px,100px,100px,0px);">
+                <content>
+                </content>
+            <template id="covers" repeat="{{stories}}">
+                <wbhb-cover class="visible" coverImg="{{cover}}" coverImgSmall="{{coverSmall}}"></wbhb-cover>
+            </template>
+        </div>
+    </template>
+    <script>
+        Polymer('wbhb-flygrid', {
+            centreItem: 0,
+            fetchAhead: 2,
+            
+            ready: function() {
+                this.super();
+                
+                this.resetStyleInheritance = false;
+                this.applyAuthorStyles = true;
+                
+                // fetch starting stories
+                //this.fetchStory(this.centreItem);
+                
+                //for (var i = 1; i <= this.fetchAhead; i++) {
+                //    this.fetchStory(this.centreItem + i);
+                //}
+                
+                this.addEventListener('polymer-signal-newStoryLoaded', this.newStoryLoaded);
+            },
+            
+            positionChildrenLine: function() {
+                var myCovers = this.querySelectorAll("wbhb-cover");
+                var carosel = document.querySelector("wbhb-carosel");
+                
+                for (var i = 0; i < myCovers.length; i++) {
+                    //myCovers[i].isOpen = false;
+                    myCovers[i].small = false
+                    myCovers[i].style.left = (i - carosel.centreItem) * 700 + 500 + "px";
+                }   
+            },
+            
+            positionChildrenGrid: function() {
+                var myCovers = this.querySelectorAll("wbhb-cover");
+                
+                for (var i = 0; i < myCovers.length; i++) {
+                    myCovers[i].small = true;
+                    myCovers[i].style.left = (i % 5) * 300 + 100 + "px";
+                    myCovers[i].style.top = Math.floor(i / 5) * 300 + 100 + "px";
+                }   
+            },
+            
+            fetchMore: function() {
+                var next = this.centreItem + this.fetchAhead;
+                this.fetchStory(next);
+            },
+            
+            newStoryLoaded: function(e, detail, sender) {
+                this.popCovers();
+                this.positionChildrenLine();
+            },
+            
+            popCovers: function() {
+         
+                //pop stories from shadow DOM (a little clunky)
+                var images = this.$.clipBox.querySelectorAll("wbhb-cover");
+                for (var i = 0; i < images.length; i++) {
+                    var image = images[i];
+                    image = image.parentNode.removeChild(image);
+                    this.appendChild(image);
+                    //image.classList.add("visible");
+                    //image.classList.remove("hidden");
+                }
+            }
+            
+        });
+  </script>
+</polymer-element>

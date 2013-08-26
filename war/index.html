@@ -10,22 +10,62 @@
         <link rel="import" href="components/wbhb-page.html">
         <link rel="import" href="components/wbhb-story.html">
         <link rel="import" href="components/wbhb-carosel.html">
+        <link rel="import" href="components/wbhb-flygrid.html">
         
         <link rel="import" href="polymer/polymer-ui-elements/polymer-ui-toolbar/polymer-ui-toolbar.html">
         <link rel="import" href="polymer/polymer-ui-elements/polymer-ui-icon-button/polymer-ui-icon-button.html">
         
+        <script>
+            function scrollBack() {
+                hideGrid();
+                document.querySelector('#mainContent').scroll(1-2);
+            }
+            
+            function scrollRight() {
+                hideGrid();
+                document.querySelector('#mainContent').scroll(1);
+            }
+            
+            function showGrid() {
+                var flygrid = document.querySelector('#mainOverview');
+                var carosel = document.querySelector('#mainContent');
+                
+                flygrid.classList.add("visible");
+                flygrid.classList.remove("hidden");
+                
+                carosel.classList.add("hidden");
+                carosel.classList.remove("visible");
+                
+                setTimeout(flygrid.positionChildrenGrid(), 1000);
+            }
+            
+            function hideGrid() {
+                var flygrid = document.querySelector('#mainOverview');
+                var carosel = document.querySelector('#mainContent');
+                
+                carosel.classList.add("visible");
+                carosel.classList.remove("hidden");
+                
+                flygrid.classList.add("hidden");
+                flygrid.classList.remove("visible");
+                
+                //setTimeout(flygrid.positionChildrenLine(), 1000);
+            }
+        </script>
+        
     </head>
     <body>
         <polymer-ui-toolbar theme="polymer-ui-dark-theme">
-            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="left" onclick="document.querySelector('#mainContent').scroll(-1);">
+            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="left" onclick="scrollBack();">
             </polymer-ui-icon-button>
             <div flex></div>
-            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="grid" onclick="document.querySelector('#mainContent').getMore();">
+            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="grid" onclick="showGrid();">
             </polymer-ui-icon-button>
             <div flex></div>
-            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="right" onclick="document.querySelector('#mainContent').scroll(1);">
+            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="right" onclick="scrollRight();">
             </polymer-ui-icon-button>
         </polymer-ui-toolbar>
-        <wbhb-carosel id="mainContent" centreItem="0"></wbhb-carosel>
+        <wbhb-carosel id="mainContent" class="visible" centreItem="0"></wbhb-carosel>
+        <wbhb-flygrid id="mainOverview" class="hidden"></wbhb-flygrid>
     </body>
 </html>
