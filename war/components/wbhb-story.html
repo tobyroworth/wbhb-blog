@@ -3,7 +3,7 @@
     </style>
     <template>
         <polymer-ajax id="getPage" url="" handleAs="text" on-polymer-response="addPage" />
-        <div style="position: relative;  margin: 10px; top: 0px" id="storyContainer">
+        <div style="overflow: visible;" id="storyContainer">
             <content select="wbhb-cover">
                 <wbhb-cover class="a6" id="cover" coverImg='{{story.cover}}' small='false'></wbhb-cover>
             </content>
@@ -76,7 +76,8 @@
                 var pages = story.querySelectorAll("wbhb-page");
                 
                 for (var i = 0; i < pages.length; i++) {
-                   pages[i].style.top = 420*(i+1) + "px";
+                    pages[i].style.transition = "-webkit-transform 0.5s";
+                    pages[i].style.webkitTransform = "translate3d(0, " + 420 * i + "px, 0)";
                 }
             },
             
@@ -85,7 +86,8 @@
                 var pages = story.querySelectorAll("wbhb-page");
                 
                 for (var i = 0; i < pages.length; i++) {
-                    pages[i].style.top = 0 + "px";
+                    pages[i].style.transition = "-webkit-transform 0.5s";
+                    pages[i].style.webkitTransform = "translate3d(0, " + -425 + "px, 0)";
                 }
             },
             

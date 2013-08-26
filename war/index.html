@@ -26,6 +26,10 @@
                 document.querySelector('#mainContent').scroll(1);
             }
             
+            function deleteStory() {
+                document.querySelector('#mainContent').deleteStory();
+            }
+            
             function showGrid() {
                 var flygrid = document.querySelector('#mainOverview');
                 var carosel = document.querySelector('#mainContent');
@@ -61,11 +65,14 @@
             <div flex></div>
             <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="grid" onclick="showGrid();">
             </polymer-ui-icon-button>
+            <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="trash" onclick="deleteStory();">
+            </polymer-ui-icon-button>
             <div flex></div>
             <polymer-ui-icon-button theme="polymer-ui-dark-theme" icon="right" onclick="scrollRight();">
             </polymer-ui-icon-button>
         </polymer-ui-toolbar>
         <wbhb-carosel id="mainContent" class="visible" centreItem="0"></wbhb-carosel>
-        <wbhb-flygrid id="mainOverview" class="hidden"></wbhb-flygrid>
+<!--        <wbhb-flygrid id="mainOverview" class="hidden"></wbhb-flygrid>-->
+        <div id="mainOverview" />
     </body>
 </html>

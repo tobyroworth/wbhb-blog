@@ -6,6 +6,8 @@
     "coverSmall": "images/0001.png",
     "pages": [
         "stories/0001/page1.html",
+        "stories/0001/page2.html",
+        "stories/0001/page2.html",
         "stories/0001/page2.html"
     ],
     "tags": [

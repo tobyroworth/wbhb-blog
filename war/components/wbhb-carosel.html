@@ -3,7 +3,8 @@
 <polymer-element name="wbhb-carosel" attributes="centreItem" extends="wbhb-storyList">
     <template>
         <polymer-signals on-polymer-signal-newStoryLoaded="newStoryLoaded"></polymer-signals>
-        <div id="clipBox" style="width: 100%; overflow: hidden; clip:rect(0px,100px,100px,0px);">
+        <div id="clipBox" style="width: 300%; height: 400px; overflow: visible;">
+            <div id="magicDiv" style="display: inline-block; width: 0px; height: 400px"></div>
                 <content>
                 </content>
             <template id="stories" repeat="{{stories}}">
@@ -15,6 +16,9 @@
         Polymer('wbhb-carosel', {
             centreItem: 0,
             fetchAhead: 2,
+            keepBehind: 2,
+            storiesSubset: [],
+            firstRun: true,
             
             ready: function() {
                 this.super();
@@ -23,22 +27,42 @@
                 this.applyAuthorStyles = true;
                 
                 // fetch starting stories
-                this.fetchStory(this.centreItem);
+                //this.fetchStory(this.centreItem);
                 
-                for (var i = 1; i <= this.fetchAhead; i++) {
+                for (var i = - this.keepBehind; i <= this.fetchAhead; i++) {
                     this.fetchStory(this.centreItem + i);
                 }
                 
                 this.addEventListener('polymer-signal-newStoryLoaded', this.newStoryLoaded);
+                
+                //do some bad calculations
+                // TODO: do this properly, somehow
+                var storiesFit = Math.floor(document.body.clientWidth / 580);
+                var freeWidth = document.body.clientWidth % 580;
+                if (storiesFit % 2 == 0) {
+                    freeWidth += 580;
+                }
+                freeWidth /= 2;
+                this.$.magicDiv.style.width = freeWidth + "px";
             },
             
             positionChildren: function() {
+               
                 var myStories = this.querySelectorAll("wbhb-story");
                 
                 for (var i = 0; i < myStories.length; i++) {
+                    var newPos = -600 * this.centreItem;//(this.centreItem - i) * 700;// + 500;
+                    
                     myStories[i].isOpen = false;
-                    myStories[i].style.left = (i - this.centreItem) * 700 + 500 + "px";
+                    //myStories[i].style.left = newPos + "px";
+                    myStories[i].style.webkitTransition = "-webkit-transform 2s";
+                    myStories[i].style.webkitTransform = "translate3d(" + newPos + "px, 0, 0)";
                 }   
+                
+                //myStories[centreItem].style.webkitTransform = "translate3d(" + 600 + "px, 0, 0)";
+                //var newPos = this.centreItem * -600;
+                //this.style.webkitTransition = "-webkit-transform 2s";
+                //this.style.webkitTransform = "translate3d(" + newPos + "px, 0, 0)";
             },
             
             centreItemChanged: function() {
@@ -86,6 +110,11 @@
                     image.classList.add("visible");
                     image.classList.remove("hidden");
                 }
+            },
+            
+            deleteStory: function() {
+                var victim = this.querySelector("wbhb-story");
+                this.asyncMethod(function() {this.removeChild(victim);}, null, 1000);
             }
             
         });
